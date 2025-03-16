@@ -1,8 +1,19 @@
+const fs = require('fs');
 const { exec } = require('child_process');
 
-exec('npm run start', (error, stdout, stderr) => {
+function logErrorToFile(error, stdout, stderr) {
+	const errorMessage = `
+        Error: ${error ? error.message : 'None'}
+        Stdout: ${stdout}
+        Stderr: ${stderr}
+    `;
+	fs.writeFileSync('error.log', errorMessage, { flag: 'a' });
+	console.log('Error has been logged to error.log');
+}
+
+exec('node index.js', (error, stdout, stderr) => {
 	if (error) {
-		console.error(`exec error: ${error}`);
+		logErrorToFile(error, stdout, stderr);
 		return;
 	}
 	console.log(`stdout: ${stdout}`);
