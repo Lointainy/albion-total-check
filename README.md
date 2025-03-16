@@ -1,5 +1,11 @@
 # Ablion total check
 
+<span style="color:red;">
+    <b>
+       XLSX work with NODE only
+    </b>
+</span>
+
 ## Table of contents
 
 - [Overview](#overview)
@@ -11,7 +17,10 @@
 ## Getting Started
 
 ```bash
-# script
+# start
+npm i
+
+#script run
 npm run start
 ```
 
@@ -46,7 +55,7 @@ albion-total-check.exe
 - `DATA_TOTAL.txt` - only a common column with all users.
 - `DATA_USERS.txt` - structured table with all the calculated data.
 
-3. data (DON`T touch):
+3. temp (DON`T touch):
 
 - `energy.json` minor file for temp data.
 
