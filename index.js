@@ -1,14 +1,27 @@
 const fs = require('fs');
 const path = require('path');
+const XLSX = require('xlsx');
 
 const inputFileName = 'data.txt';
-const files = ['DATA_USERS.txt', 'DATA_TOTAL.txt', 'DATA_DEBTOR.txt'];
+const files = ['DATA_USERS', 'DATA_TOTAL', 'DATA_DEBTOR'];
 
 const OUTPUT_DIR = path.join(__dirname, 'OUTPUT');
 const INPUT_DIR = path.join(__dirname, 'INPUT');
 const DATA_PATH = path.join(INPUT_DIR, inputFileName);
+const TEMP_DIR = path.join(__dirname, 'temp');
+const ENERGY_PATH = path.join(TEMP_DIR, 'energy.json');
 
-fs.writeFileSync('data/energy.json', '');
+if (!fs.existsSync(TEMP_DIR)) {
+	fs.mkdirSync(TEMP_DIR, { recursive: true });
+	console.log('TEMP folder created');
+
+	if (!fs.existsSync(ENERGY_PATH)) {
+		fs.writeFileSync(ENERGY_PATH, '');
+		console.log('Energy JSON file created');
+	}
+}
+
+fs.writeFileSync('temp/energy.json', '');
 
 if (!fs.existsSync(OUTPUT_DIR)) {
 	fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -80,42 +93,62 @@ fs.readFile(DATA_PATH, 'utf8', (err, data) => {
 		playerStats[player].total = playerStats[player].totalAmount + playerStats[player].totalWithdraw;
 	});
 
-	fs.writeFileSync('data/energy.json', JSON.stringify(jsonData, null, 4));
+	fs.writeFileSync('temp/energy.json', JSON.stringify(jsonData, null, 4));
 
-	generateFiles();
-
-	let resultText = 'Player\tTotal Amount\tTotal Withdrawal\tTotal\n';
-	let totalText = 'Player\tTotal\n';
-	let debtorText = 'Player\tDebt\n';
+	const usersData = [['Player', 'Total Amount', 'Total Withdrawal', 'Total']];
+	const totalData = [['Player', 'Total']];
+	const debtorData = [['Player', 'Debt']];
 
 	for (const player in playerStats) {
 		const { totalAmount, totalWithdraw, total } = playerStats[player];
-
-		resultText += `${player}\t${totalAmount}\t${totalWithdraw}\t${total}\n`;
-		totalText += `${player}\t${total}\n`;
+		usersData.push([player, totalAmount, totalWithdraw, total]);
+		totalData.push([player, total]);
 
 		if (total < 0) {
-			debtorText += `${player}\t${total}\n`;
+			debtorData.push([player, total]);
 		}
 	}
 
 	const fileContents = [
-		{ name: files[0], content: resultText },
-		{ name: files[1], content: totalText },
-		{ name: files[2], content: debtorText }
+		{
+			name: files[0],
+			content: {
+				txt: formatDataForTxt(usersData),
+				xls: usersData
+			}
+		},
+		{
+			name: files[1],
+			content: {
+				txt: formatDataForTxt(totalData),
+				xls: totalData
+			}
+		},
+		{
+			name: files[2],
+			content: {
+				txt: formatDataForTxt(debtorData),
+				xls: debtorData
+			}
+		}
 	];
 
 	fileContents.forEach(({ name, content }) => {
-		fs.writeFileSync(path.join(OUTPUT_DIR, name), content);
+		fs.writeFileSync(path.join(OUTPUT_DIR, `${name}.txt`), content.txt);
+		generateExcelFile(`${name}.xlsx`, content.xls);
 	});
 
 	console.log('DATA saved');
 });
 
-function generateFiles() {
-	files.forEach((file) => {
-		const filePath = path.join(OUTPUT_DIR, file);
-		fs.writeFileSync(filePath, '');
-	});
+function formatDataForTxt(data, delimiter = '\t') {
+	return data.map((row) => row.join(delimiter)).join('\n');
+}
+
+function generateExcelFile(fileName, data) {
+	const worksheet = XLSX.utils.aoa_to_sheet(data);
+	const workbook = XLSX.utils.book_new();
+	XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+	XLSX.writeFile(workbook, path.join(OUTPUT_DIR, fileName));
 }
 

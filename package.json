@@ -3,10 +3,21 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node index.js",
+		"pkg": "pkg start.js --output albion-total-check.exe --targets node16-win-x64"
 	},
 	"author": "GREEDIs",
 	"license": "ISC",
-	"description": "debt check for silver and energy in ALBION ONLINE"
+	"description": "debt check for silver and energy in ALBION ONLINE",
+	"dependencies": {
+		"xlsx": "^0.18.5"
+	},
+	"pkg": {
+		"assets": [
+			"INPUT/**/*",
+			"OUTPUT/**/*",
+			"temp/**/*"
+		]
+	}
 }
 
