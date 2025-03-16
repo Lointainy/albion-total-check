@@ -1,0 +1,12 @@
+{
+	"name": "albion-total-check",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"author": "GREEDIs",
+	"license": "ISC",
+	"description": "debt check for silver and energy in ALBION ONLINE"
+}
+
