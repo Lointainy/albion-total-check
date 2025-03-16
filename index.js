@@ -1,6 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const XLSX = require('xlsx');
+
+let XLSX;
+try {
+	XLSX = require('xlsx');
+	console.log('xlsx package found');
+} catch (error) {
+	console.log('xlsx package not found, skipping Excel operations');
+}
 
 const inputFileName = 'data.txt';
 const files = ['DATA_USERS', 'DATA_TOTAL', 'DATA_DEBTOR'];
@@ -135,7 +142,10 @@ fs.readFile(DATA_PATH, 'utf8', (err, data) => {
 
 	fileContents.forEach(({ name, content }) => {
 		fs.writeFileSync(path.join(OUTPUT_DIR, `${name}.txt`), content.txt);
-		generateExcelFile(`${name}.xlsx`, content.xls);
+
+		if (XLSX) {
+			generateExcelFile(`${name}.xlsx`, content.xls);
+		}
 	});
 
 	console.log('DATA saved');
@@ -151,4 +161,3 @@ function generateExcelFile(fileName, data) {
 	XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 	XLSX.writeFile(workbook, path.join(OUTPUT_DIR, fileName));
 }
-
