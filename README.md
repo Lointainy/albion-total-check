@@ -1,7 +1,12 @@
 # Ablion total check
 
-- [text instruction](/README.txt) - help
-- [img instruction](/README.txt) - image instruction how to get data
+## Table of contents
+
+- [Overview](#overview)
+- [Structure](#folders-structure)
+- [Getting](#getting-started)
+- [Setup](#setup)
+- [text instruction](/README.txt)
 
 ## Getting Started
 
@@ -44,3 +49,11 @@ albion-total-check.exe
 3. data (DON`T touch):
 
 - `energy.json` minor file for temp data.
+
+## Overview
+
+<img src="./img/instruction-1.png" alt="screenshot-1" width="300">
+<img src="./img/instruction-2.png" alt="screenshot-2" width="500">
+<br>
+<img src="./img/instruction-3.png" alt="screenshot-3" width="500">
+<img src="./img/instruction-4.png" alt="screenshot-4" width="500">
